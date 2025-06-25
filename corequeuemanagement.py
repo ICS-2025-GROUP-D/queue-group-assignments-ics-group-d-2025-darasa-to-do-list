@@ -1,5 +1,4 @@
 
-Its supposed to have this code right here.....
     # <--- (1) RAY -- Core Queue Management --->
     def is_full(self) -> bool:
         """
