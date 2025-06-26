@@ -15,6 +15,7 @@ class PrintJob:
         self.created_at = datetime.now()
         self.status = "waiting"
         self.waiting_time = 0.0
+        self.current_time=0
 
 class PrintQueueManager:
     """
@@ -209,33 +210,29 @@ class PrintQueueManager:
     # Goal: Simulate the passage of time and trigger time-based events.
     # ======================================================================
 
-    def tick(self, duration: int = 1):
-        """
-        Simulates the passage of a 'tick' of time, updating job states.
-        """
-        print(f"\n... TICK! {duration} second(s) pass ...")
-        self.current_simulation_time += duration
+def tick(self):
+    #showing that a minute has passed
+    print(f"Tick! Time is now {self.current_time} minutes")
 
-        # Update waiting time for all jobs currently in the queue
-        with self.lock:
-            for i in range(self.size):
-                index = (self.front + i) % self.capacity
-                if self.queue[index].status == "waiting":
-                    self.queue[index].waiting_time += duration
+    #making all jobs a minute older
+    for job in self.queue:
+        job.waiting_time += 1
 
-        # TODO (Member 5): Your task is to trigger the time-dependent processes.
-        # The simulation's time has advanced. Now, you must call the functions
-        # that check for time-related events.
-        #
-        # 1. Call the job expiry function to remove any jobs that have now expired.
-        # 2. Call the priority aging function to upgrade the priority of jobs that have been waiting long enough.
-        #
-        # Uncomment the lines below and ensure they work correctly.
+        print(f"Job {job.job_id} now waiting {job.waiting_time} minutes")
+
+    #aging jobs every 5 minutes
+    if self.current_time % 5 == 0:
+        print("Time for aging jobs")
+        self.apply_priority_aging()
+
+    #checking for expired jobs every 5 minutes
+    if self.current_time % 5 == 0:
+        print("Removing expired jobs")
+        #removing them
         self.remove_expired_jobs()
-        # self.apply_priority_aging() # This line should be uncommented once Member 2 finishes their part.
 
-        print(f"Simulation time is now {self.current_simulation_time}s.")
-        
+    #updating the current time for the system
+    self.current_time += 1
 
     # ======================================================================
     # MODULE 6: VISUALIZATION & REPORTING (Owner: Member 6)
