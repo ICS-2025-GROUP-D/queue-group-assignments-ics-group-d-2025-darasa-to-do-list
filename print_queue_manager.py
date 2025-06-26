@@ -9,38 +9,20 @@ from module6_visualizer import Visualizer
 from collections import deque
 
 
-class PrintQueueManager:
-    def __init__(self):
-        self.queue = CircularQueue(capacity=10)
-        self.priority_mgr = PriorityManager()
-        self.expiry_mgr = ExpiryManager()
-        self.visualizer = Visualizer()
-        self.concurrent = ConcurrentHandler(self)
+# <--- (2) JAKES - Priority and Aging System --->
+    def apply_priority_aging(self):
+        """
+        Iterates through waiting jobs and ages their priority if the aging interval is met.
+        Ages by decrementing priority number (making it more urgent).
+        """
+        print(f"[{self.current_simulation_time}s] DEBUG: Entering apply_priority_aging.") # DEBUG PRINT
+        print(f"[{self.current_simulation_time}s] Applying priority aging...")
+        for i in range(self.size):
+            idx = (self.front + i) % self.capacity
+            job = self.queue[idx]
+            if job and job.status == "waiting": # Only age jobs that are currently waiting
+                if job.waiting_time > 0 and int(job.waiting_time) % self.aging_interval == 0:
+                    job.priority = max(1, job.priority - 1)
+                    print(f"[{self.current_simulation_time}s] Job {job.job_id[:8]}... '{job.title}' priority aged to {job.priority}.")
+        print(f"[{self.current_simulation_time}s] DEBUG: Exiting apply_priority_aging.") # DEBUG PRINT
 
-    def enqueue_job(self, user_id, job_id, priority):
-        job = PrintJob(user_id, job_id, priority)
-        if self.queue.enqueue(job):
-            print(f"[+] Job {job_id} enqueued.")
-        else:
-            print(f"[!] Queue full. Job {job_id} rejected.")
-
-    def tick(self):
-        print("[Tick] Time advancing...")
-        jobs = self.queue.status()
-        for job in jobs:
-            job.wait_time += 1
-        self.priority_mgr.apply_aging(jobs)
-        jobs = self.expiry_mgr.remove_expired(jobs)
-        jobs = self.priority_mgr.sort_by_priority(jobs)
-        self.queue.queue = deque(jobs, maxlen=self.queue.capacity)
-        self.visualizer.show(self.queue.status())
-
-    def print_job(self):
-        job = self.queue.dequeue()
-        if job:
-            print(f"[✓] Printed job: {job.job_id}")
-        else:
-            print("[!] No job to print.")
-
-    def show_status(self):
-        self.visualizer.show(self.queue.status())
