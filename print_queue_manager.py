@@ -52,7 +52,7 @@ def show_status(self):
         print(f"[{self.current_simulation_time}s] DEBUG: Exiting show_status.") # DEBUG PRINT
 
 
-    def get_queue_snapshot(self) -> dict:
+def get_queue_snapshot(self) -> dict:
         """
         Returns a dictionary representing the current state of the queue.
         Useful for external reporting or logging.

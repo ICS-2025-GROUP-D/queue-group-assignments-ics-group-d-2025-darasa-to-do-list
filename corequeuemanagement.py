@@ -1,6 +1,6 @@
 
     # <--- (1) RAY -- Core Queue Management --->
-    def is_full(self) -> bool:
+def is_full(self) -> bool:
         """
         Checks if the print queue is full.
         """
@@ -9,7 +9,7 @@
         print(f"[{self.current_simulation_time}s] DEBUG: is_full returning {result}.") # DEBUG PRINT
         return result
 
-    def is_empty(self) -> bool:
+def is_empty(self) -> bool:
         """
         Checks if the print queue is empty.
         """
@@ -18,7 +18,7 @@
         print(f"[{self.current_simulation_time}s] DEBUG: is_empty returning {result}.") # DEBUG PRINT
         return result
 
-    def enqueue_job(self, user_id: str, title: str, priority: int = 5) -> bool:
+def enqueue_job(self, user_id: str, title: str, priority: int = 5) -> bool:
         """
         Adds a new print job to the queue.
         Ensures thread-safe operation.
@@ -40,7 +40,7 @@
             print(f"[{self.current_simulation_time}s] Job '{new_job.title}' (ID: {new_job.job_id[:8]}...) added to queue (size={self.size}).")
             return True
 
-    def dequeue_job(self) -> PrintJob | None:
+def dequeue_job(self) -> PrintJob | None:
         """
         Selects and removes the highest priority job from the queue for printing.
         Priority is determined by lowest 'priority' value, then by highest 'waiting_time'.
